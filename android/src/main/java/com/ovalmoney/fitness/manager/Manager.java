@@ -402,7 +402,7 @@ public class Manager implements ActivityEventListener {
             promise.reject(String.valueOf(FitnessError.ERROR_METHOD_NOT_AVAILABLE), "Method not available");
             return;
         }
-
+        
         SessionReadRequest request = new SessionReadRequest.Builder()
                 .readSessionsFromAllApps()
                 .read(DataType.TYPE_ACTIVITY_SEGMENT)
@@ -425,8 +425,10 @@ public class Manager implements ActivityEventListener {
                             .collect(Collectors.toList());
 
                         WritableArray sleep = Arguments.createArray();
+
                         for (Object session : sleepSessions) {
                             List<DataSet> dataSets = response.getDataSet((Session) session);
+
                             for (DataSet dataSet : dataSets) {
                                 processSleep(dataSet, (Session) session, sleep);
                             }
@@ -447,11 +449,14 @@ public class Manager implements ActivityEventListener {
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             for(Field field : dp.getDataType().getFields()) {
-                WritableMap stepMap = Arguments.createMap();
-                stepMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                stepMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                stepMap.putDouble("quantity", dp.getValue(field).asInt());
-                map.pushMap(stepMap);
+                if (!"user_input".equals(dp.getOriginalDataSource().getStreamName())) {
+                    WritableMap stepMap = Arguments.createMap();
+
+                    stepMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+                    stepMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+                    stepMap.putDouble("quantity", dp.getValue(field).asInt());
+                    map.pushMap(stepMap);
+                }
             }
         }
     }
@@ -460,11 +465,14 @@ public class Manager implements ActivityEventListener {
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             for(Field field : dp.getDataType().getFields()) {
-                WritableMap distanceMap = Arguments.createMap();
-                distanceMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                distanceMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                distanceMap.putDouble("quantity", dp.getValue(field).asFloat());
-                map.pushMap(distanceMap);
+                if (!"user_input".equals(dp.getOriginalDataSource().getStreamName())) {
+                    WritableMap distanceMap = Arguments.createMap();
+
+                    distanceMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+                    distanceMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+                    distanceMap.putDouble("quantity", dp.getValue(field).asFloat());
+                    map.pushMap(distanceMap);
+                }
             }
         }
     }
@@ -473,11 +481,14 @@ public class Manager implements ActivityEventListener {
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             for(Field field : dp.getDataType().getFields()) {
-                WritableMap caloryMap = Arguments.createMap();
-                caloryMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                caloryMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                caloryMap.putDouble("quantity", dp.getValue(field).asFloat());
-                map.pushMap(caloryMap);
+                if (!"user_input".equals(dp.getOriginalDataSource().getStreamName())) {
+                    WritableMap caloryMap = Arguments.createMap();
+
+                    caloryMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+                    caloryMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+                    caloryMap.putDouble("quantity", dp.getValue(field).asFloat());
+                    map.pushMap(caloryMap);
+                }
             }
         }
     }
@@ -486,11 +497,14 @@ public class Manager implements ActivityEventListener {
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             for(Field field : dp.getDataType().getFields()) {
-                WritableMap heartRateMap = Arguments.createMap();
-                heartRateMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                heartRateMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                heartRateMap.putDouble("quantity", dp.getValue(field).asFloat());
-                map.pushMap(heartRateMap);
+                if (!"user_input".equals(dp.getOriginalDataSource().getStreamName())) {
+                    WritableMap heartRateMap = Arguments.createMap();
+
+                    heartRateMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+                    heartRateMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+                    heartRateMap.putDouble("quantity", dp.getValue(field).asFloat());
+                    map.pushMap(heartRateMap);
+                }
             }
         }
     }
@@ -499,12 +513,15 @@ public class Manager implements ActivityEventListener {
 
         for (DataPoint dp : dataSet.getDataPoints()) {
             for(Field field : dp.getDataType().getFields()) {
-                WritableMap sleepMap = Arguments.createMap();
-                sleepMap.putString("value", dp.getValue(field).asActivity());
-                sleepMap.putString("sourceId", session.getIdentifier());
-                sleepMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                sleepMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                map.pushMap(sleepMap);
+                if (!"user_input".equals(dp.getOriginalDataSource().getStreamName())) {
+                    WritableMap sleepMap = Arguments.createMap();
+
+                    sleepMap.putString("value", dp.getValue(field).asActivity());
+                    sleepMap.putString("sourceId", session.getIdentifier());
+                    sleepMap.putString("startDate", dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+                    sleepMap.putString("endDate", dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+                    map.pushMap(sleepMap);
+                }
             }
         }
     }
